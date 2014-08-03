@@ -1,0 +1,13 @@
+/dts-v1/;
+/include/ "parallella.dtsi"
+/ {
+	model = "Adapteva Parallella (gen0)";
+	ps7_axi_interconnect_0: amba@0 {
+		ps7_slcr_0: ps7-slcr@f8000000 {
+			clkc: clkc@100 {
+				/* The gen0 board uses a 30MHz clock */
+				ps-clk-frequency = <30000000>;
+			} ;
+		} ;
+	} ;
+} ;

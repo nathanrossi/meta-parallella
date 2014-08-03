@@ -1,7 +1,6 @@
-/dts-v1/;
-/include/ "zynq-7-base.dtsi"
+/include/ "zynq7-base.dtsi"
 / {
-	model = "Adapteva Parallella-16";
+	model = "Adapteva Parallella";
 	chosen {
 		bootargs = "console=ttyPS0,115200 root=/dev/ram rw earlyprintk";
 		linux,stdout-path = "/amba@0/serial@e0001000";
@@ -12,24 +11,20 @@
 	} ;
 	ps7_axi_interconnect_0: amba@0 {
 		ps7_slcr_0: ps7-slcr@f8000000 {
-			clocks {
-				ps_clk: ps_clk {
-					#clock-cells = <0>;
-					clock-frequency = <30000000>;
-					clock-output-names = "ps_clk";
-					compatible = "fixed-clock";
-				} ;
+			clkc: clkc@100 {
+				ps-clk-frequency = <33333333>;
 			} ;
 		} ;
 
 		ps7_ethernet_0: ps7-ethernet@e000b000 {
 			phy-handle = <&phy0>;
-			phy-mode = "gmii";
+			phy-mode = "rgmii-id";
 			mdio {
-				phy0: phy@7 {
-					compatible = "marvell,88e1310";
+				phy0: phy@0 {
+					compatible = "marvell,88e1510";
 					device_type = "ethernet-phy";
-					reg = <7>;
+					reg = <0>;
+					marvell,reg-init = <0x3 0x10 0xff00 0x1e 0x3 0x11 0xfff0 0xa>;
 				} ;
 			} ;
 		} ;
@@ -41,6 +36,7 @@
 		/* J7 - USB Device (Next to Ethernet) */
 		ps7_usb_1: ps7-usb@e0003000 {
 			dr_mode = "peripheral";
+			compatible = "invalid";
 		};
 
 		/* Main I2C Bus (TODO) */

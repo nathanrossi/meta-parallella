@@ -29,20 +29,17 @@ This layer depends on:
 Booting
 =======
 
-Example TFTP boot, place the following image from the build on your TFTP server.
+Example SD rootfs boot, prepare your SD card by paritioning it with a small
+(64 MB+) FAT partition and a larger ext4 parition.
 
- * core-image-minimal-parallella.ext2.gz.u-boot
+Place the following files in the first parition. These files are found under the
+deploy/images/parallella/ directory. Additionally select the correct bitstream
+for your board (from deploy/images/parallella/bistreams).
+
  * uImage
- * uImage-parallella.dtb
+ * parallella-mmc-boot.dtb (rename it as 'devicetree.dtb')
+ * e.g. parallella_e16_headless_gpiose_7010.bit.bin (rename it as 'parallella.bit.bin')
 
-Power Parallella board up without an SD card, at the U-Boot prompt execute the
-following:
+Power Parallella board up with the SD card. The system will boot up and load the
+kernel, and then mount the rootfs from the second parition of the SD card.
 
-	U-Boot> set serverip <server ip address on your network>
-	U-Boot> set ipaddr <valid static ip address on your network>
-	U-Boot> tftp 0x2000000 core-image-minimal-parallella.ext2.gz.u-boot
-	U-Boot> tftp 0x3000000 uImage
-	U-Boot> tftp 0x2A00000 uImage-parallella.dtb
-	U-Boot> bootm 0x3000000 0x2000000 0x2A00000
-
-Please consult the meta-xilinx layer for additional booting information.

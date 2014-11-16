@@ -35,11 +35,18 @@ do_install() {
 	for i in $(ls ${S}/tools/e-gnu/bin/ | grep epiphany-elf); do
 		install -m 755 ${S}/tools/e-gnu/bin/$i ${D}/usr/epiphany-elf/bin/$i
 		ln -sf ../epiphany-elf/bin/$i ${D}/${bindir}/$i
+		# TODO: Fix stripping, for now just hack the stripping of really large files
+		$STRIP ${D}/usr/epiphany-elf/bin/$i
 	done
 	cp -ar ${S}/tools/e-gnu/epiphany-elf/bin/* ${D}/usr/epiphany-elf/epiphany-elf/bin
 
 	install -d ${D}/usr/epiphany-elf/libexec
 	cp -ar ${S}/tools/e-gnu/libexec/* ${D}/usr/epiphany-elf/libexec/
+
+	# TODO: Fix stripping, for now just hack the stripping of really large files
+	for i in cc1 cc1plus collect2 lto1 lto-wrapper; do
+		$STRIP ${D}/usr/epiphany-elf/libexec/gcc/epiphany-elf/4.8.2/$i
+	done
 
 	install -d ${D}/usr/epiphany-elf/lib ${D}/usr/epiphany-elf/epiphany-elf/lib
 	cp -ar ${S}/tools/e-gnu/lib/* ${D}/usr/epiphany-elf/lib/

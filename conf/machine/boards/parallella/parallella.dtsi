@@ -1,4 +1,3 @@
-/include/ "zynq7-base.dtsi"
 / {
 	model = "Adapteva Parallella";
 	chosen {

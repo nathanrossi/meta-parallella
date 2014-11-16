@@ -40,6 +40,12 @@ bitstream for your board (from deploy/images/parallella/bistreams).
  * parallella-mmc-boot.dtb (rename it as 'devicetree.dtb')
  * e.g. parallella_e16_headless_gpiose_7010.bit.bin (rename it as 'parallella.bit.bin')
 
+Extract the rootfs image into the second ext4 partition. Assuming the rootfs
+image built is named 'core-image-epiphany', extract the tar.gz from
+deploy/images/core-image-epiphany-parallella.tar.gz into the root of the
+partition (run the tar command as root/with sudo in order ot preserve file
+system perms/options).
+
 Power Parallella board up with the SD card. The system will boot up and load the
 kernel, and then mount the rootfs from the second partition of the SD card.
 

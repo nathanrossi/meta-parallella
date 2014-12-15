@@ -1,4 +1,3 @@
-# SUMMARY = "Parallella Headless Bitstream"
 SUMMARY = "Parallella hdmi Bitstream"
 SECTION = "bsp"
 
@@ -13,7 +12,7 @@ S = "${WORKDIR}/git"
 INHIBIT_DEFAULT_DEPS = "1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-COMPATIBLE_MACHINE = "parallella1-hdmi"
+COMPATIBLE_MACHINE = "parallella-hdmi"
 
 inherit deploy
 
@@ -27,7 +26,6 @@ do_install() {
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}/bitstreams
-#	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*_headless.*\.bit\.bin); do
 	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*_hdmi.*\.bit\.bin); do
 		install ${S}/fpga/bitstreams/$i ${DEPLOY_DIR_IMAGE}/bitstreams
 	done

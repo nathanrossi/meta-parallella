@@ -1,15 +1,4 @@
-/dts-v1/;
-/include/ "zynq-parallella1.dtsi"
-
 / {
-       chosen {
-	        bootargs = "console=ttyPS0,115200 root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait";
-		//1. bootargs = "console=ttyPS0,115200 root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait";
-	        //2. bootargs = "root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait";
-	        //3. bootargs = "console=ttyPS0,115200 root=/dev/sda1 rw earlyprintk rootfstype=ext4 rootwait";
-                linux,stdout-path = "/amba@0/serial@e0001000";
-        } ;
-
 	fpga_axi: fpga-axi@0 {
 		compatible = "simple-bus";
 		#address-cells = <0x1>;
@@ -27,7 +16,8 @@
 			xlnx,num-fstores = <0x3>;
 			dma-channel@43000000 {
 				compatible = "xlnx,axi-vdma-mm2s-channel";
-				interrupts = <0 59 0x4>;
+				interrupt-parent = <&ps7_scugic_0>;
+				interrupts = <0 59 4>;
 				xlnx,datawidth = <0x40>;
 				xlnx,genlock-mode = <0x0>;
 				xlnx,include-dre = <0x0>;
@@ -59,7 +49,7 @@
 		axi_spdif_tx_0: axi-spdif-tx@0x75c00000 {
 			compatible = "adi,axi-spdif-tx-1.00.a";
 			reg = <0x75c00000 0x1000>;
-			dmas = <&ps7_dma 0>;
+			dmas = <&ps7_dma_s 0>;
 			dma-names = "tx";
 			clocks = <&clkc 15>, <&audio_clock>;
 			clock-names = "axi", "spdif";

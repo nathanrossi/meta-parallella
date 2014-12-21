@@ -39,7 +39,23 @@
 		};
 
 		/* Main I2C Bus (TODO) */
-		/*ps7_i2c_0: ps7-i2c@e0004000 { };*/
+		ps7_i2c_0: ps7-i2c@e0004000 {
+			adv7511: adv7511@39 {
+				compatible = "adi,adv7511";
+				reg = <0x39>;
+				adi,input-style = <0x2>;
+				adi,input-id = <0x1>;
+				adi,input-color-depth = <0x0>;
+				adi,sync-pulse = <0x3>;
+				adi,bit-justification = <0x0>;
+				adi,up-conversion = <0x0>;
+				adi,timing-generation-sequence = <0x0>;
+				adi,vsync-polarity = <0x2>;
+				adi,hsync-polarity = <0x2>;
+				adi,tdms-clock-inversion;
+				adi,clock-delay = <0x3>;
+			};
+		};
 
 		/* Disabled/Unused Devices */
 		ps7_sd_0: ps7-sdio@e0100000 { compatible = "invalid"; };

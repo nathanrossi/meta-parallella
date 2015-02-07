@@ -19,7 +19,7 @@ IMAGE_INSTALL = " \
 		git \
 		"
 
-##		packagegroup-epiphany-elf-fromsource-tools 
+##		packagegroup-epiphany-elf-fromsource-tools
 
 IMAGE_INSTALL += "\
    ${ROOTFS_PKGMANAGE_BOOTSTRAP} \
@@ -37,3 +37,8 @@ inherit core-image
 
 # Specify to write image as a tar.gz file
 IMAGE_FSTYPES = "tar.gz"
+
+# Add kernel-dev to the image for uapi/linux/epiphany.h so that e-hal can be built
+IMAGE_INSTALL += " \
+	kernel-dev \
+"

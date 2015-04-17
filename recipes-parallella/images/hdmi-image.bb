@@ -16,10 +16,9 @@ IMAGE_INSTALL = " \
 		${CORE_IMAGE_EXTRA_INSTALL} \
 		packagegroup-core-buildessential \
 		packagegroup-epiphany-elf-buildessentialfromsource \
+		packagegroup-epiphany-sdk-buildessentialfromsource \
 		git \
 		"
-
-##		packagegroup-epiphany-elf-fromsource-tools
 
 IMAGE_INSTALL += "\
    ${ROOTFS_PKGMANAGE_BOOTSTRAP} \

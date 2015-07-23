@@ -38,8 +38,17 @@
 			compatible = "invalid";
 		};
 
-		/* Main I2C Bus (TODO) */
+		/* Main I2C Bus */
 		ps7_i2c_0: ps7-i2c@e0004000 {
+			compatible = "cdns,i2c-r1p10";
+			reg = <0xe0004000 0x1000>;
+			interrupts = <0 25 4>;
+			interrupt-parent = <&ps7_scugic_0>;
+			bus-id = <0x0>;
+			clocks = <&clkc 38>;
+			clock-frequency = <100000>;
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
 			adv7511: adv7511@39 {
 				compatible = "adi,adv7511";
 				reg = <0x39>;

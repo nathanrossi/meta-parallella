@@ -4,8 +4,10 @@ SECTION = "bsp"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=3c34afdc3adf82d2448f12715a255122"
 
-SRC_URI = "git://github.com/parallella/parallella-hw.git;protocol=https"
-SRCREV = "ce97134bc01e8f3b8374e0e74b2ca191c8873f59"
+SRC_URI = "git://github.com/parallella/parallella-hw.git;branch=${SBRANCH};protocol=https"
+
+SBRANCH = "2015.1"
+SRCREV = "beb4ca09e9616cc76364735f19e8502c438cd61c"
 
 S = "${WORKDIR}/git"
 
@@ -26,7 +28,8 @@ do_install() {
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}/bitstreams
-	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*_hdmi.*\.bit\.bin); do
+	# for now use the official headless bitstream.. later override this with hdmi version official or home grown!
+	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*\.bit\.bin); do
 		install ${S}/fpga/bitstreams/$i ${DEPLOY_DIR_IMAGE}/bitstreams
 	done
 }

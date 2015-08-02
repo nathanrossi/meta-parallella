@@ -40,4 +40,5 @@ IMAGE_FSTYPES = "tar.gz"
 # Add kernel-dev to the image for uapi/linux/epiphany.h so that e-hal can be built
 IMAGE_INSTALL += " \
 	kernel-dev \
+	kernel-devsrc \
 "

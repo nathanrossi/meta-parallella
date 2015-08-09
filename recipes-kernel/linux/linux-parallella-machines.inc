@@ -2,11 +2,11 @@
 # Leave the KMACHINE as zynq so that zynq common kernel config is picked up
 COMPATIBLE_MACHINE_parallella = "parallella"
 KMACHINE_parallella ?= "zynq"
-KERNEL_DEVICETREE_parallella = "zynq-parallella1-headless.dtb"
+KERNEL_DEVICETREE_parallella = "zynq-parallella-headless.dtb"
 
 COMPATIBLE_MACHINE_parallella-hdmi = "parallella-hdmi"
 KMACHINE_parallella-hdmi ?= "zynq"
-KERNEL_DEVICETREE_parallella-hdmi = "zynq-parallella1-hdmi.dtb"
+KERNEL_DEVICETREE_parallella-hdmi = "zynq-parallella.dtb"
 
 # Default kernel config fragements for specific machines
 

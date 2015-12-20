@@ -29,10 +29,10 @@ index dfefdf4..f39ec85 100644
 +obj-$(CONFIG_EPIPHANY)		+= epiphany.o
 diff --git a/drivers/char/epiphany.c b/drivers/char/epiphany.c
 new file mode 100644
-index 0000000..e917ad0
+index 0000000..32dae9b
 --- /dev/null
 +++ b/drivers/char/epiphany.c
-@@ -0,0 +1,663 @@
+@@ -0,0 +1,660 @@
 +#include <linux/init.h>
 +#include <linux/interrupt.h>
 +#include <linux/io.h>
@@ -129,8 +129,8 @@ index 0000000..e917ad0
 +DEVICE_INT_ATTR(mailbox_hi, S_IRUGO, mailbox_hi);
 +
 +static struct attribute *attrs[] = {
-+    &dev_attr_mailbox_notifier.attr.attr, NULL,
-+    &dev_attr_mailbox_lo.attr.attr, NULL,
++    &dev_attr_mailbox_notifier.attr.attr,
++    &dev_attr_mailbox_lo.attr.attr,
 +    &dev_attr_mailbox_hi.attr.attr, NULL,
 +};
 +
@@ -158,8 +158,8 @@ index 0000000..e917ad0
 +static u32 reg_read(epiphany_mailbox_t *mailbox, u32 reg);
 +static void enable_mailbox_irq(void);
 +static void disable_mailbox_irq(void);
-+static int read_mailbox_lo(void);
-+static int read_mailbox_hi(void);
++static u32 read_mailbox_lo(void);
++static u32 read_mailbox_hi(void);
 +static void irq_work_func(struct work_struct *work);
 +static irqreturn_t mailbox_irq_handler(int irq, void *data);
 +
@@ -628,14 +628,14 @@ index 0000000..e917ad0
 +	reg_write(&mailbox, ERX_CFG_REG, cfg & ~MAILBOX_ENABLE);
 +}
 +
-+static inline int read_mailbox_lo(void)
++static inline u32 read_mailbox_lo(void)
 +{
-+        return reg_read(&mailbox, MAILBOX_LO_REG);
++        return reg_read(&mailbox, (u32)MAILBOX_LO_REG);
 +}
 +
-+static inline int read_mailbox_hi(void)
++static inline u32 read_mailbox_hi(void)
 +{
-+	return reg_read(&mailbox, MAILBOX_HI_REG);
++	return reg_read(&mailbox, (u32)MAILBOX_HI_REG);
 +}
 +
 +static void irq_work_func(struct work_struct *work)
@@ -643,12 +643,9 @@ index 0000000..e917ad0
 +	irq_work_t * irq_work = (irq_work_t *)work;
 +	struct file * efd_file = NULL;
 +
-+	// TODO consider implementing a fifo so that all the mailbox entries
-+	// can be read, however this might over complicate the user side
-+	// Read the mailbox to clear the interrupt source
-+	mailbox_lo = read_mailbox_lo();
-+	mailbox_hi = read_mailbox_hi();
-+		
++	mailbox_lo = (int)read_mailbox_lo();
++	mailbox_hi = (int)read_mailbox_hi();
++
 +	// current file is always used at the time of the interrupt
 +	if (0 < mailbox_notifier)
 +	{
@@ -685,7 +682,7 @@ index 0000000..e917ad0
 +
 +	// disable the interrupt	
 +	disable_mailbox_irq();
-+	
++
 +	if (0 < mailbox_notifier && irq_workqueue)
 +	{
 +		queue_work(irq_workqueue, &mailbox->irq_work.work);
@@ -698,7 +695,7 @@ index 0000000..e917ad0
 +module_exit(epiphany_exit);
 diff --git a/include/uapi/linux/epiphany.h b/include/uapi/linux/epiphany.h
 new file mode 100644
-index 0000000..abb52cb
+index 0000000..2915cb7
 --- /dev/null
 +++ b/include/uapi/linux/epiphany.h
 @@ -0,0 +1,60 @@

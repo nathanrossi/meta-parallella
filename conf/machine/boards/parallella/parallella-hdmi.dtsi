@@ -45,7 +45,7 @@
 		audio_clock: audio_clock {
 			compatible = "fixed-clock";
 			#clock-cells = <0>;
-			clock-frequency = <12288000>;
+			clock-frequency = <20000000>;
 		};
 
 		axi_spdif_tx_0: axi-spdif-tx@0x75c00000 {

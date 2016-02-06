@@ -1,13 +1,15 @@
-SUMMARY = "Parallella hdmi Bitstream"
+SUMMARY = "Unofficial Parallella hdmi Bitstream"
 SECTION = "bsp"
 
 LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://COPYING;md5=3c34afdc3adf82d2448f12715a255122"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 
 SRC_URI = "git://github.com/parallella/parallella-hw.git;branch=${SBRANCH};protocol=https"
 
-SBRANCH = "2015.1"
-SRCREV = "beb4ca09e9616cc76364735f19e8502c438cd61c"
+## 7020_hdmi and 7010_hdmi oh fpga with hdmi
+EXAMPLEBR = "parallella-oh"
+SRC_URI = "git://github.com/peteasa/examples.git;branch=${EXAMPLEBR}"
+SRCREV = "49d95db0597d6e1d21c5a2e0b047e83e14ffd0bb"
 
 S = "${WORKDIR}/git"
 

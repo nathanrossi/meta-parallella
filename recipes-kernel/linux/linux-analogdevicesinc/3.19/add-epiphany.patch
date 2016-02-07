@@ -32,7 +32,7 @@ new file mode 100644
 index 0000000..32dae9b
 --- /dev/null
 +++ b/drivers/char/epiphany.c
-@@ -0,0 +1,660 @@
+@@ -0,0 +1,634 @@
 +#include <linux/init.h>
 +#include <linux/interrupt.h>
 +#include <linux/io.h>
@@ -85,8 +85,6 @@ index 0000000..32dae9b
 +#define ERX_REG_START 0x810F0300
 +#define ERX_REG_END 0x810F07FF
 +#define ERX_CFG_REG 0x0 	// 0xF0300
-+#define MAILBOX_LO_REG 0x430 	// 0xF0730
-+#define MAILBOX_HI_REG 0x434 	// 0xF0734
 +#define MAILBOX_STATE 0x438 	// 0xF0738
 +#define MAILBOX_ENABLE (0x1 << 28) 	// bit 28 in ERX_CFG_REG
 +
@@ -114,8 +112,6 @@ index 0000000..32dae9b
 +
 +static struct eventfd_ctx * efd_ctx = NULL;
 +static int mailbox_notifier = -1;
-+static int mailbox_lo = 0;
-+static int mailbox_hi = 0;
 +
 +// mailbox_notifier is the eventfd sent by ioctl to the driver.
 +// Use epoll_wait on the user side to detect the arrival of
@@ -123,15 +119,8 @@ index 0000000..32dae9b
 +// waiting on a second eventfd descriptor.
 +DEVICE_INT_ATTR(mailbox_notifier, S_IRUGO, mailbox_notifier);
 +
-+// mailbox content is read during interrupt servicing
-+// the user side code can read the sysfs files for the messages
-+DEVICE_INT_ATTR(mailbox_lo, S_IRUGO, mailbox_lo);
-+DEVICE_INT_ATTR(mailbox_hi, S_IRUGO, mailbox_hi);
-+
 +static struct attribute *attrs[] = {
-+    &dev_attr_mailbox_notifier.attr.attr,
-+    &dev_attr_mailbox_lo.attr.attr,
-+    &dev_attr_mailbox_hi.attr.attr, NULL,
++    &dev_attr_mailbox_notifier.attr.attr, NULL,
 +};
 +
 +static struct attribute_group attr_group = {
@@ -158,8 +147,6 @@ index 0000000..32dae9b
 +static u32 reg_read(epiphany_mailbox_t *mailbox, u32 reg);
 +static void enable_mailbox_irq(void);
 +static void disable_mailbox_irq(void);
-+static u32 read_mailbox_lo(void);
-+static u32 read_mailbox_hi(void);
 +static void irq_work_func(struct work_struct *work);
 +static irqreturn_t mailbox_irq_handler(int irq, void *data);
 +
@@ -628,23 +615,10 @@ index 0000000..32dae9b
 +	reg_write(&mailbox, ERX_CFG_REG, cfg & ~MAILBOX_ENABLE);
 +}
 +
-+static inline u32 read_mailbox_lo(void)
-+{
-+        return reg_read(&mailbox, (u32)MAILBOX_LO_REG);
-+}
-+
-+static inline u32 read_mailbox_hi(void)
-+{
-+	return reg_read(&mailbox, (u32)MAILBOX_HI_REG);
-+}
-+
 +static void irq_work_func(struct work_struct *work)
 +{
 +	irq_work_t * irq_work = (irq_work_t *)work;
 +	struct file * efd_file = NULL;
-+
-+	mailbox_lo = (int)read_mailbox_lo();
-+	mailbox_hi = (int)read_mailbox_hi();
 +
 +	// current file is always used at the time of the interrupt
 +	if (0 < mailbox_notifier)
@@ -698,7 +672,7 @@ new file mode 100644
 index 0000000..2915cb7
 --- /dev/null
 +++ b/include/uapi/linux/epiphany.h
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,52 @@
 +#ifndef EPIPHANY_H
 +#define EPIPHANY_H
 +#include <linux/ioctl.h>
@@ -749,13 +723,5 @@ index 0000000..2915cb7
 + * mailbox notifier file
 + */
 +#define MAILBOX_NOTIFIER "/sys/class/epiphany/epiphany/mailbox_notifier"
-+/**
-+ * mailbox high byte valid after interrupt
-+ */
-+#define MAILBOX_HI "/sys/class/epiphany/epiphany/mailbox_hi"
-+/**
-+ * mailbox low byte valid after interrupt
-+ */
-+#define MAILBOX_LO "/sys/class/epiphany/epiphany/mailbox_lo"
 +
 +#endif

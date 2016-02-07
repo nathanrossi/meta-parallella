@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 ##SRC_URI = "git://github.com/parallella/oh.git;branch=${SBRANCH};protocol=https"
 
 ## 7020_hdmi and 7010_hdmi oh fpga with hdmi
-EXAMPLEBR = "parallella-oh"
+EXAMPLEBR = "elink-redesign"
 SRC_URI = "git://github.com/peteasa/examples.git;branch=${EXAMPLEBR}"
 SRCREV = "4ae2b78524391b27f5796d27cf399cf721a3e0a2"
 

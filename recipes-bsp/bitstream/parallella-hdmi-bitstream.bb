@@ -4,12 +4,13 @@ SECTION = "bsp"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 
-SRC_URI = "git://github.com/parallella/parallella-hw.git;branch=${SBRANCH};protocol=https"
+##No official bitsteam with hdmi just yet
+##SRC_URI = "git://github.com/parallella/oh.git;branch=${SBRANCH};protocol=https"
 
 ## 7020_hdmi and 7010_hdmi oh fpga with hdmi
 EXAMPLEBR = "parallella-oh"
 SRC_URI = "git://github.com/peteasa/examples.git;branch=${EXAMPLEBR}"
-SRCREV = "49d95db0597d6e1d21c5a2e0b047e83e14ffd0bb"
+SRCREV = "4ae2b78524391b27f5796d27cf399cf721a3e0a2"
 
 S = "${WORKDIR}/git"
 

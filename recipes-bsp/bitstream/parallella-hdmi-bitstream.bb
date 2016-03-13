@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 ## 7020_hdmi and 7010_hdmi oh fpga with hdmi
 EXAMPLEBR = "elink-redesign"
 SRC_URI = "git://github.com/peteasa/examples.git;branch=${EXAMPLEBR}"
-SRCREV = "4ae2b78524391b27f5796d27cf399cf721a3e0a2"
+SRCREV = "18571fc8d3cafd0a3089adcd45c547e853a65e89"
 
 S = "${WORKDIR}/git"
 

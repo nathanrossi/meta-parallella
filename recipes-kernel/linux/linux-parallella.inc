@@ -11,7 +11,8 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/config:"
 
 # Now replace the SRC_URI Note have to re-apply linux-xilinx-configs.inc additions
 
-KBRANCH ?= "main"
+KBRANCH ?= "parallella-linux-2016.3"
+
 SRC_URI = " \
 		git://github.com/parallella/parallella-linux.git;protocol=https;branch=${KBRANCH} \
 		file://xilinx-base;type=kmeta;destsuffix=xilinx-base \

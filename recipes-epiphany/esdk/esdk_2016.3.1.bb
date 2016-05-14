@@ -144,9 +144,9 @@ do_install() {
 	ln -s epiphany-elf-strip e-strip
 	cd ${D}/usr/epiphany/epiphany-sdk
 	ln -s ../../lib/epiphany/bsps .
-	cd tools
+	cd ${D}/usr/epiphany/epiphany-sdk/tools
 	ln -s ../../../epiphany-elf e-gnu
-	cd host
+	cd ${D}/usr/epiphany/epiphany-sdk/tools/host
 	ln -s ../../../../bin .
 	ln -s ../../../../include/epiphany ./include
 	ln -s ../../../../lib/epiphany ./lib
@@ -232,11 +232,11 @@ FILES_epiphany-libs += " \
 		${libdir}/epiphany/*.so.0.0.0 \
 		${libdir}/epiphany/*.a \
 		${libdir}/epiphany/*.la \
-		/usr/epiphany/epiphany-sdk/tools/host/lib/* \
+		/usr/epiphany/epiphany-sdk/tools/host/lib \
 		"
 
 FILES_epiphany-libs-dev += " \
 		${includedir}/epiphany/* \
-		/usr/epiphany/epiphany-sdk/tools/host/include/* \
+		/usr/epiphany/epiphany-sdk/tools/host/include \
 		"
 

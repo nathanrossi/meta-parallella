@@ -1,3 +1,9 @@
+/* TODO why do I have to include this when it is already included in the .dts file */
+/include/ "zynq7-base.dtsi"
+
+/* TODO why cant I add the gpio file
+#include <dt-bindings/gpio/gpio.h> */
+
 / {
 	model = "Adapteva Parallella";
 	chosen {
@@ -8,6 +14,17 @@
 		device_type = "memory";
 		reg = < 0x0 0x3e000000 >;
 	} ;
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+		no-map;
+		emem: emem@3e00000 {
+			reg = <0x3e000000 0x2000000>;
+		};
+	};
+
 	ps7_axi_interconnect_0: amba@0 {
 		ps7_slcr_0: ps7-slcr@f8000000 {
 			clkc: clkc@100 {
@@ -38,8 +55,17 @@
 			compatible = "invalid";
 		};
 
-		/* Main I2C Bus (TODO) */
+		/* Main I2C Bus */
 		ps7_i2c_0: ps7-i2c@e0004000 {
+			compatible = "cdns,i2c-r1p10";
+			reg = <0xe0004000 0x1000>;
+			interrupts = <0 25 4>;
+			interrupt-parent = <&ps7_scugic_0>;
+			bus-id = <0x0>;
+			clocks = <&clkc 38>;
+			clock-frequency = <100000>;
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
 			adv7511: adv7511@39 {
 				compatible = "adi,adv7511";
 				reg = <0x39>;
@@ -55,6 +81,31 @@
 				adi,tdms-clock-inversion;
 				adi,clock-delay = <0x3>;
 			};
+			isl9305: isl9305@68 {
+				compatible = "isil,isl9305";
+				reg = <0x68>;
+
+				regulators {
+					regulator_epiphany: dcd1 {
+						regulator-name = "VDD_DSP";
+						regulator-min-microvolt =  <900000>;
+						regulator-max-microvolt = <1200000>;
+					};
+					dcd2 {
+						regulator-name = "1P35V";
+						regulator-always-on;
+					};
+					ldo1 {
+						regulator-name = "VDD_ADJ";
+						regulator-always-on;
+					};
+					ldo2 {
+						regulator-name = "VDD_GPIO";
+						regulator-always-on;
+					};
+				};
+			};
+
 		};
 
 		/* Disabled/Unused Devices */
@@ -68,4 +119,79 @@
 		ps7_can_0: ps7-can@e0008000 { compatible = "invalid"; };
 		ps7_can_1: ps7-can@e0009000 { compatible = "invalid"; };
 	} ;
-} ;
+
+	fpga_axi: fpga-axi@0 {
+		compatible = "simple-bus";
+		#address-cells = <0x1>;
+		#size-cells = <0x1>;
+		ranges;
+		elink2_esaxi_0: esaxi@80000000 {
+			compatible = "adapteva,elink";
+			interrupts = <0 55 1>;
+			interrupt-parent = <&ps7_scugic_0>;
+
+			clocks = <&clkc 15>, <&clkc 16>, <&clkc 17>, <&clkc 18>;
+			clock-names = "fclk0", "fclk1", "fclk2", "fclk3";
+
+			#address-cells = <2>; /* <north-west core's id, side (NESW)> */
+			#size-cells = <2>; /* <#chip rows, #chip cols> */
+
+			/* Can have more than one reserved memory region. Memory regions
+			 * can be shared by elinks.  */
+			memory-region = <&emem>;
+
+			/* Can have at most one child node with compatible string
+			 * "adapteva,array" or "adapteva,gpio" ??? */
+
+			/* First range is FPGA config regs.
+			 * Second range is mappable emesh region.
+			 * _4_ * 64 * (1<<20)
+			 */
+			reg = <0x81000000 0x100000>, <0x80000000 0x10000000>;
+
+			/* (Optional) coreid pin-out register(s) configuration. */
+			/* If we add some constraints we could derive this from the
+			 * child node ???
+			 */
+			/*adapteva,coreid = <0x808>; */
+
+			/* No connection between elink coreid pins and the Epiphany chip */
+			adapteva,no-coreid-pinout;
+
+			/* Initial FPGA elink MMU config. This is hardcoded in the FPGA
+			 * code now.
+			 * Not sure if we actually need it here. Driver needs to probe
+			 * bitstream version to check whether it is supported or not
+			 * anyways. And if not this is the only mapping we will allow */
+			adapteva,mmu = <0x8e000000 0x3e000000 0x02000000>;
+
+			/* Optional power / thermal control. Will not implement much for
+			 * now but will read supply voltage to check if we can
+			 * run chip elink TX at full speed. Can be a list. */
+			vdd-supply = <&regulator_epiphany>; /* Can be a list */
+			/*io-channels = <&adc 0>;*/
+			/*io-channel-names = "zynq_temp";*/
+
+			array0@808 {
+				compatible = "adapteva,chip-array";
+				/* North-westmost coreid, #NESW, #chip rows, #chip cols */
+				reg = <0x808 1 1 1>;
+
+/*
+				// reg North=0, East=1, South=2, West=3
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					port@0 {
+						reg = <1>;
+
+						array0_east: endpoint {
+							remote-endpoint = <&elink0_port>;
+						};
+					};
+				};
+*/
+			};
+		};
+	};
+};

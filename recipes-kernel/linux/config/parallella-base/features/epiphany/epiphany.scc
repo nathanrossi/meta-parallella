@@ -1,4 +1,0 @@
-define KFEATURE_DESCRIPTION "Enable options for Epiphany support"
-define KFEATURE_COMPATIBILITY board
-
-kconf hardware epiphany.cfg

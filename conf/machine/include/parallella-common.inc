@@ -1,8 +1,20 @@
-DEFAULTTUNE = "armv7ahf-neon"
+DEFAULTTUNE = "cortexa9thf-neon"
+
+MACHINE_EXTRA_RRECOMMENDS += "kernel-modules"
+
+require conf/machine/include/tune-cortexa9.inc
+
+SERIAL_CONSOLE = "115200 ttyPS0"
+
+MACHINE_FEATURES_BACKFILL_CONSIDERED += "rtc"
 
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-parallella"
 
-require conf/machine/include/tune-zynq.inc
-require conf/machine/include/machine-xilinx-default.inc
+KERNEL_IMAGETYPE = "uImage"
+KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
-SERIAL_CONSOLE = "115200 ttyPS0"
+UBOOT_SUFFIX = "img"
+UBOOT_ENTRYPOINT = "0x8000"
+UBOOT_LOADADDRESS = "0x8000"
+
+

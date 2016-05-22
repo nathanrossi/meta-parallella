@@ -171,7 +171,7 @@ PACKAGES = " \
 		epiphany-libs-dev \
 		"
 
-INSANE_SKIP_epiphany-toolchain += "debug-files dev-so arch staticdev ldflags"
+INSANE_SKIP_epiphany-toolchain += "debug-files dev-so arch staticdev ldflags libdir"
 INSANE_SKIP_epiphany-libs += "dev-so staticdev ldflags"
 INSANE_SKIP_epiphany-tools += "ldflags"
 

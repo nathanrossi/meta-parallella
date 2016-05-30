@@ -9,6 +9,7 @@ Supported Boards/Machines
 Boards Supported by this layer (Please refer to the associate .conf for more
 information):
  * Adapteva Parallella (parallella)
+ * Adapteva Parallella Desktop (parallella-hdmi)
 
 Additional information on the Parallella http://www.parallella.org/.
 For more information on the Epiphany architecture http://www.adapteva.com/.
@@ -22,9 +23,6 @@ This layer depends on:
 
 	URI: git://git.openembedded.org/openembedded-core
 	layers: meta
-
-	URI: git://git.yoctoproject.org/meta-xilinx
-	layers: meta-xilinx
 
 Booting
 =======

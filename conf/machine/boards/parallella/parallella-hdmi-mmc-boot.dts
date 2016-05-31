@@ -1,9 +1,0 @@
-/dts-v1/;
-/include/ "zynq7-base.dtsi"
-/include/ "parallella.dtsi"
-/include/ "parallella-hdmi.dtsi"
-/ {
-	chosen {
-		bootargs = "console=ttyPS0,115200 root=/dev/mmcblk0p2 rw rootwait earlyprintk";
-	} ;
-} ;

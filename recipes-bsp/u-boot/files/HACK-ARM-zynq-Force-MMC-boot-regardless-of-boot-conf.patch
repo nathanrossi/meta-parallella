@@ -1,0 +1,31 @@
+From 253d294f71f7a1a0613a07f7b29d1bf57e3780f9 Mon Sep 17 00:00:00 2001
+From: Nathan Rossi <nathan@nathanrossi.com>
+Date: Thu, 17 Mar 2016 17:43:58 +1000
+Subject: [PATCH] HACK: ARM: zynq: Force MMC boot regardless of boot config
+
+Parallella boots SPL from QSPI but the u-boot and system images are
+located on SD.
+
+Signed-off-by: Nathan Rossi <nathan@nathanrossi.com>
+Upstream-Status: Inappropriate [Hack to force for specific board]
+---
+ arch/arm/mach-zynq/spl.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm/mach-zynq/spl.c b/arch/arm/mach-zynq/spl.c
+index 6c5415a..dae66e1 100644
+--- a/arch/arm/mach-zynq/spl.c
++++ b/arch/arm/mach-zynq/spl.c
+@@ -65,6 +65,9 @@ u32 spl_boot_device(void)
+ 		hang();
+ 	}
+ 
++	puts("force mmc boot\n");
++	mode = BOOT_DEVICE_MMC1;
++
+ 	return mode;
+ }
+ 
+-- 
+2.8.1
+

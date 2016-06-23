@@ -15,6 +15,7 @@ SRC_URI_append = " \
 		file://parallella/parallella.cfg \
 		file://parallella/epiphany.cfg \
 		file://parallella/extra.cfg \
+		file://parallella/hdmi.cfg \
 		"
 
 require recipes-kernel/linux/linux-yocto.inc

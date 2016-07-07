@@ -45,14 +45,29 @@
 			} ;
 		} ;
 
+		usb_phy0: phy0 {
+			compatible = "usb-nop-xceiv";
+			#phy-cells = <0>;
+			status = "okay";
+		};
+
+		usb_phy1: phy1 {
+			compatible = "usb-nop-xceiv";
+			#phy-cells = <0>;
+			status = "disabled";
+		};
+
 		/* J6 - USB Host (Next to HDMI) */
 		ps7_usb_0: ps7-usb@e0002000 {
 			dr_mode = "host";
+			usb-phy = <&usb_phy0>;
 		};
+
 		/* J7 - USB Device (Next to Ethernet) */
 		ps7_usb_1: ps7-usb@e0003000 {
 			dr_mode = "peripheral";
 			compatible = "invalid";
+			usb-phy = <&usb_phy1>;
 		};
 
 		/* Main I2C Bus */

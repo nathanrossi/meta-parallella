@@ -14,5 +14,6 @@ SRC_URI += " \
 	file://0003-dmaengine-commit-0c400db.patch \
 	file://0004-dma-commit-23ef060.patch \
 	file://0005-dma-proof-concept-xilinx-dma.patch \
+	file://0006-drm-proof-concept-adi_axi_hdmi.patch \
 	"
 

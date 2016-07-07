@@ -57,7 +57,9 @@
 			dmas = <&ps7_dma_s 0>;
 			dma-names = "tx";
 			clocks = <&clkc 15>, <&audio_clock>;
-			clock-names = "axi", "spdif";
+			clock-names = "axi", "ref";
+
+			#sound-dai-cells = <0>;
 		};
 
 		adv7511_hdmi_snd: adv7511_hdmi_snd {

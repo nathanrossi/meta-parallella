@@ -1,0 +1,22 @@
+From 80336ab140a467c469effb50d5467e1c45f28824 Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Thu, 5 Sep 2013 17:12:43 -0700
+Subject: ASoC: Add SPDIF DAI format
+
+https://github.com/analogdevicesinc/linux/tree/xcomm_zynq_3_10
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index ae9a227..eea0501 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -33,6 +33,7 @@ struct snd_compr_stream;
+ #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+ #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+ #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
++#define SND_SOC_DAIFMT_SPDIF		8 /* SPDIF */
+ 
+ /* left and right justified also known as MSB and LSB respectively */
+ #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J

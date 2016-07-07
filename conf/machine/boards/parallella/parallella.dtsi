@@ -26,6 +26,11 @@
 	};
 
 	ps7_axi_interconnect_0: amba@0 {
+
+		ps7_ddrc_0: ps7-ddrc@f8006000 {
+			compatible = "xlnx,zynq-ddrc-a05";
+		} ;
+
 		ps7_slcr_0: ps7-slcr@f8000000 {
 			clkc: clkc@100 {
 				ps-clk-frequency = <33333333>;

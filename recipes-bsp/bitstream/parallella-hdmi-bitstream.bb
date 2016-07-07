@@ -1,11 +1,11 @@
 SUMMARY = "Parallella hdmi Bitstream"
 SECTION = "bsp"
 
-LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://COPYING;md5=3c34afdc3adf82d2448f12715a255122"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
 
-SRC_URI = "git://github.com/parallella/parallella-hw.git;protocol=https"
-SRCREV = "ce97134bc01e8f3b8374e0e74b2ca191c8873f59"
+SRC_URI = "git://github.com/peteasa/examples.git;protocol=https;branch=elink-redesign"
+SRCREV = "1f6d5c15cafe11eaaea0ff9fbfc4e4c7e5ca0984"
 
 S = "${WORKDIR}/git"
 

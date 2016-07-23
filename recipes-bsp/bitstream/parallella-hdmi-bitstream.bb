@@ -1,16 +1,14 @@
 SUMMARY = "Unofficial Parallella hdmi Bitstream"
 SECTION = "bsp"
 
-LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=751419260aa954499f7abaabaa882bbe"
 
 ##No official bitsteam with hdmi just yet
 ##SRC_URI = "git://github.com/parallella/oh.git;branch=${SBRANCH};protocol=https"
 
-## 7020_hdmi and 7010_hdmi oh fpga with hdmi
-EXAMPLEBR = "elink-redesign"
-SRC_URI = "git://github.com/peteasa/examples.git;branch=${EXAMPLEBR}"
-SRCREV = "07b29d26838434c1b8f20fcd61507d4b600259e6"
+SRC_URI = "git://github.com/peteasa/examples.git;protocol=https;branch=elink-redesign"
+SRCREV = "1f6d5c15cafe11eaaea0ff9fbfc4e4c7e5ca0984"
 
 S = "${WORKDIR}/git"
 

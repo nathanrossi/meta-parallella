@@ -26,6 +26,11 @@
 	};
 
 	ps7_axi_interconnect_0: amba@0 {
+
+		ps7_ddrc_0: ps7-ddrc@f8006000 {
+			compatible = "xlnx,zynq-ddrc-a05";
+		} ;
+
 		ps7_slcr_0: ps7-slcr@f8000000 {
 			clkc: clkc@100 {
 				ps-clk-frequency = <33333333>;
@@ -95,6 +100,24 @@
 				adi,hsync-polarity = <0x2>;
 				adi,tdms-clock-inversion;
 				adi,clock-delay = <0x3>;
+
+				#sound-dai-cells = <0>;
+
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+						reg = <0>;
+						adv7511_in: endpoint {
+							remote-endpoint = <&axi_hdmi_out>;
+						};
+					};
+
+					port@1 {
+						reg = <1>;
+					};
+				};
 			};
 			isl9305: isl9305@68 {
 				compatible = "isil,isl9305";

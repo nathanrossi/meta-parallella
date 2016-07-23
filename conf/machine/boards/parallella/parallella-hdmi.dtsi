@@ -11,14 +11,12 @@
 			#size-cells = <1>;
 			#dma-cells = <1>;
 			#dma-channels = <1>;
-			interrupt-parent = <&ps7_scugic_0>;
-			interrupts = <0 59 4>;
 			reg = <0x43000000 0x1000>;
 			xlnx,include-sg = <0x0>;
-			xlnx,flush-fsync = <0x1>;
 			xlnx,num-fstores = <0x3>;
 			dma-channel@43000000 {
 				compatible = "xlnx,axi-vdma-mm2s-channel";
+				interrupt-parent = <&ps7_scugic_0>;
 				interrupts = <0 59 4>;
 				xlnx,datawidth = <0x40>;
 				xlnx,genlock-mode = <0x0>;
@@ -34,7 +32,7 @@
 		};
 
 		axi_hdmi@6C000000 {
-			compatible = "adi,axi-hdmi-tx-1.00.a";
+			compatible = "adi,axi-hdmi-1.00.a";
 			reg = <0x6c000000 0x10000>;
 			encoder-slave = <&adv7511>;
 			dmas = <&axi_vdma_0 0>;
@@ -53,8 +51,8 @@
 			reg = <0x75c00000 0x1000>;
 			dmas = <&ps7_dma_s 0>;
 			dma-names = "tx";
-			clocks = <&clkc 15>, <&audio_clock>, <&audio_clock>;
-			clock-names = "axi", "ref", "spdif";
+			clocks = <&clkc 15>, <&audio_clock>;
+			clock-names = "axi", "spdif";
 		};
 
 		adv7511_hdmi_snd: adv7511_hdmi_snd {

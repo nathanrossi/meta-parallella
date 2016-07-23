@@ -31,8 +31,7 @@ do_install() {
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}/bitstreams
-	# for now use the official headless bitstream.. later override this with hdmi version official or home grown!
-	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*\.bit\.bin); do
+	for i in $(ls ${S}/fpga/bitstreams/ | grep parallella_.*_hdmi.*\.bit\.bin); do
 		install ${S}/fpga/bitstreams/$i ${DEPLOY_DIR_IMAGE}/bitstreams
 	done
 }

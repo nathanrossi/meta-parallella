@@ -68,38 +68,5 @@
 			audio-codec = <&adv7511>;
 			cpu-dai = <&axi_spdif_tx_0>;
 		};
-		
-		elink2_axi_bram_ctrl_2: axi_bram_ctrl@70000000 {
-			compatible = "xlnx,axi-bram-ctrl-4.0";
-			reg = <0x70000000 0x2000>;
-			xlnx,bram-addr-width = <0xb>;
-			xlnx,bram-inst-mode = "EXTERNAL";
-			xlnx,ecc = <0x0>;
-			xlnx,ecc-onoff-reset-value = <0x0>;
-			xlnx,ecc-type = <0x0>;
-			xlnx,fault-inject = <0x0>;
-			xlnx,memory-depth = <0x800>;
-			xlnx,s-axi-ctrl-addr-width = <0x20>;
-			xlnx,s-axi-ctrl-data-width = <0x20>;
-			xlnx,s-axi-id-width = <0x1>;
-			xlnx,s-axi-supports-narrow-burst = <0x0>;
-			xlnx,single-port-bram = <0x1>;
-		};
-		
-		elink2_esaxi_0: esaxi@80000000 {
-			compatible = "xlnx,parallella-base-1.0";
-			interrupt-parent = <&ps7_scugic_0>;
-			interrupts = <0 55 4>;
-			reg = <0x80000000 0x40000000>;
-			xlnx,read-tag-addr = <0x810>;
-			xlnx,s00-axi-addr-width = <0x1e>;
-			xlnx,s00-axi-aruser-width = <0x1>;
-			xlnx,s00-axi-awuser-width = <0x1>;
-			xlnx,s00-axi-buser-width = <0x1>;
-			xlnx,s00-axi-data-width = <0x20>;
-			xlnx,s00-axi-id-width = <0xc>;
-			xlnx,s00-axi-ruser-width = <0x1>;
-			xlnx,s00-axi-wuser-width = <0x1>;
-		};
 	};
 };

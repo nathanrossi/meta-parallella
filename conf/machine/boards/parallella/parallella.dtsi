@@ -10,19 +10,20 @@
 		bootargs = "console=ttyPS0,115200 root=/dev/ram rw earlyprintk";
 		linux,stdout-path = "/amba@0/serial@e0001000";
 	} ;
+
 	ps7_ddr_0: memory@0 {
 		device_type = "memory";
-		reg = < 0x0 0x3e000000 >;
+		reg = < 0x0 0x40000000 >;
 	} ;
 
 	reserved-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges;
-		no-map;
-		emem: emem@3e00000 {
-			reg = <0x3e000000 0x2000000>;
-		};
+		emem: emem@3e000000 {
+		      reg = <0x3e000000 0x2000000>;
+		      no-map;
+	      };
 	};
 
 	ps7_axi_interconnect_0: amba@0 {

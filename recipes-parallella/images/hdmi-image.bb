@@ -11,6 +11,16 @@ inherit core-image
 
 IMAGE_FEATURES += "ssh-server-openssh"
 
+# OPTION:
+#
+# Either use the released Epiphany SDK using:
+#  packagegroup-epiphany-buildessential 
+#  packagegroup-epiphany-tools
+#
+# Or use build the Epiphany SDK from source using:
+#  packagegroup-epiphany-elf-buildessentialfromsource
+#  packagegroup-epiphany-sdk-buildessentialfromsource
+
 IMAGE_INSTALL = " \
 		packagegroup-core-boot \
 		${CORE_IMAGE_EXTRA_INSTALL} \
@@ -37,7 +47,7 @@ inherit core-image
 # Specify to write image as a tar.gz file
 IMAGE_FSTYPES = "tar.gz"
 
-# Add kernel-dev to the image for uapi/linux/epiphany.h so that e-hal can be built
+# Add kernel-dev to the image for uapi/linux/epiphany.h so that e-hal can be built (TODO is this now not needed?)
 IMAGE_INSTALL += " \
 	kernel-dev \
 	kernel-devsrc \

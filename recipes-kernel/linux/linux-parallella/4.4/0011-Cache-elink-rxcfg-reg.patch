@@ -1,0 +1,153 @@
+diff --git a/drivers/misc/epiphany.c b/drivers/misc/epiphany.c
+index 1661a87..c135308 100644
+--- a/drivers/misc/epiphany.c
++++ b/drivers/misc/epiphany.c
+@@ -261,6 +261,8 @@ struct elink_device {
+ 
+ 	struct connection connection;
+ 
++	union elink_rxcfg rxcfg;
++
+ 	/* TODO: Have our own cdev */
+ 	struct cdev cdev;
+ 	int minor;
+@@ -702,7 +704,6 @@ static int elink_reset(struct elink_device *elink)
+ 	int ret = 0;
+ 	union elink_reset reset = {0};
+ 	union elink_txcfg txcfg = {0};
+-	union elink_rxcfg rxcfg = {0};
+ 
+ 	/* assert reset */
+ 	reset.tx_reset = 1;
+@@ -731,17 +732,18 @@ static int elink_reset(struct elink_device *elink)
+ 	 * "Consecutive writes to rxmmu table results in system freeze"
+ 	 * https://github.com/parallella/oh/issues/50
+ 	 */
++	elink->rxcfg.reg = 0;
+ #if 0
+-	rxcfg.mmu_enable = 1;
+-	rxcfg.remap_mode = 0; /* no remapping, only mmu */
+-	reg_write(rxcfg.reg, elink->regs, ELINK_RXCFG);
++	elink->rxcfg.mmu_enable = 1;
++	elink->rxcfg.remap_mode = 0; /* no remapping, only mmu */
++	reg_write(elink->rxcfg.reg, elink->regs, ELINK_RXCFG);
+ 
+ 	elink_update_mmu_mappings(elink);
+ #else
+-	rxcfg.remap_mode = 1;
+-	rxcfg.remap_sel = 0xfe0;
+-	rxcfg.remap_pattern = 0x3e0;
+-	reg_write(rxcfg.reg, elink->regs, ELINK_RXCFG);
++	elink->rxcfg.remap_mode = 1;
++	elink->rxcfg.remap_sel = 0xfe0;
++	elink->rxcfg.remap_pattern = 0x3e0;
++	reg_write(elink->rxcfg.reg, elink->regs, ELINK_RXCFG);
+ #endif
+ 
+ 	ret = configure_adjacent_links(elink);
+@@ -833,20 +835,14 @@ static void elink_regulator_disable(struct elink_device *elink)
+ 
+ static void elink_mailbox_irq_enable(struct elink_device *elink)
+ {
+-	union elink_rxcfg cfg;
+-
+-	cfg.reg = reg_read(elink->regs, ELINK_RXCFG);
+-	cfg.mailbox_irq_en = 1;
+-	reg_write(cfg.reg, elink->regs, ELINK_RXCFG);
++	elink->rxcfg.mailbox_irq_en = 1;
++	reg_write(elink->rxcfg.reg, elink->regs, ELINK_RXCFG);
+ }
+ 
+ static void elink_mailbox_irq_disable(struct elink_device *elink)
+ {
+-	union elink_rxcfg cfg;
+-
+-	cfg.reg = reg_read(elink->regs, ELINK_RXCFG);
+-	cfg.mailbox_irq_en = 0;
+-	reg_write(cfg.reg, elink->regs, ELINK_RXCFG);
++	elink->rxcfg.mailbox_irq_en = 0;
++	reg_write(elink->rxcfg.reg, elink->regs, ELINK_RXCFG);
+ }
+ 
+ static bool elink_mailbox_empty_p(struct elink_device *elink)
+@@ -874,11 +870,8 @@ static void elink_mailbox_irq_handler_bh(struct work_struct *ws)
+ 		container_of(ws, struct elink_device, mailbox_irq_work);
+ 
+ 	mutex_lock(&epiphany.driver_lock);
+-	empty = elink_mailbox_empty_p(elink);
+-	if (!empty) {
+-		elink_mailbox_irq_disable(elink);
+-		atomic_set(&elink->mailbox_maybe_not_empty, 1);
+-	}
++	elink_mailbox_irq_disable(elink);
++	atomic_set(&elink->mailbox_maybe_not_empty, 1);
+ 	mutex_unlock(&epiphany.driver_lock);
+ 
+ 	if (!empty)
+@@ -2176,6 +2169,51 @@ static ssize_t elink_attr_vdd_wanted_store(struct device *dev,
+ 	return ret;
+ }
+ 
++ssize_t elink_attr_rxcfg_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	int ret = 0;
++	struct elink_device *elink = device_to_elink(dev);
++
++	if (mutex_lock_interruptible(&epiphany.driver_lock))
++		return -ERESTARTSYS;
++
++	ret = sprintf(buf, "%d\n", elink->rxcfg.reg);
++
++	mutex_unlock(&epiphany.driver_lock);
++	return ret;
++}
++
++/* Must hold driver lock before calling this function */
++static int _elink_attr_rxcfg_store(struct elink_device *elink, int cfg)
++{
++	elink->rxcfg.reg = cfg;
++	return 0;
++}
++
++static ssize_t elink_attr_rxcfg_store(struct device *dev,
++					   struct device_attribute *attr,
++					   const char *buf,
++					   size_t len)
++{
++	struct elink_device *elink = device_to_elink(dev);
++	int ret, data;
++
++	ret = kstrtoint(buf, 10, &data);
++	if (ret < 0)
++		return ret;
++
++	if (mutex_lock_interruptible(&epiphany.driver_lock))
++		return -ERESTARTSYS;
++
++	ret = _elink_attr_rxcfg_store(elink, data);
++	if (!ret)
++		ret = len;
++
++	mutex_unlock(&epiphany.driver_lock);
++	return ret;
++}
++
+ #define DEVICE_ATTR_PFX(_pfx, _name, _mode, _show, _store) \
+ 	struct device_attribute dev_attr_##_pfx##_##_name = \
+ 		__ATTR(_name, _mode, _show, _store)
+@@ -2185,9 +2223,14 @@ static DEVICE_ATTR_PFX(elink, vdd_current, 0444, elink_attr_vdd_current_show,
+ static DEVICE_ATTR_PFX(elink, vdd_wanted, 0644, elink_attr_vdd_wanted_show,
+ 		       elink_attr_vdd_wanted_store);
+ 
++// ELINK_RXCFG used to enable / disable mailbox irq
++static DEVICE_ATTR_PFX(elink, rxcfg, 0644, elink_attr_rxcfg_show,
++			elink_attr_rxcfg_store);
++
+ static struct attribute *dev_attrs_elink[] = {
+ 	&dev_attr_elink_vdd_current.attr,
+ 	&dev_attr_elink_vdd_wanted.attr,
++	&dev_attr_elink_rxcfg.attr,
+ 	NULL
+ };
+ 

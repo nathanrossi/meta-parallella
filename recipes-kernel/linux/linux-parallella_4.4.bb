@@ -19,5 +19,6 @@ SRC_URI += " \
 	file://0008-Sound-SPDIF-DAI-commit-80336ab.patch \
 	file://0009-ASoC-commit-7e44b46.patch \
 	file://0010-Sound-proof-concept-add-adv7511_hdmi.patch \
+	file://0011-Cache-elink-rxcfg-reg.patch \
 	"
 

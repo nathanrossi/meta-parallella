@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=e6a600fd5e1d9cbde2d983680233ad02"
 ##SRC_URI = "git://github.com/parallella/oh.git;branch=${SBRANCH};protocol=https"
 
 SRC_URI = "git://github.com/peteasa/examples.git;protocol=https;branch=elink-redesign"
-SRCREV = "0c722ce173e241b533826159a5a6e5d303728989"
+SRCREV = "4f79bc913f6e254441457409a47a487b17af30cd"
 
 S = "${WORKDIR}/git"
 

@@ -1,0 +1,33 @@
+Patch for parallella-linux created by diff of
+  linux-analogdevicesinc branch 2016_R1 fe07ae73916d16457f02b572a3050544c26a5078
+and
+  parallella-linux branch parallella-linux-2016.3 eb7c3a109b494e7f27387d119882b7a127759ada
+
+Based on the following patch:
+
+From 23ef060e11040fa35e6d368accbddb071b797e9b Mon Sep 17 00:00:00 2001
+From: Naveen Mamindlapalli <naveen.mamindlapalli@xilinx.com>
+Date: Tue, 12 Mar 2013 13:55:39 +0530
+Subject: dmatest: Fixed alignment issue with PL330 DMA driver for Zynq.
+
+Fixed alignment issue with PL330 DMA driver for Zynq. This takes
+care of MFIFO alignment issues. This needs to be taken care by the
+PL330 driver.
+
+Signed-off-by: Naveen Mamindlapalli <naveenm@xilinx.com>
+
+Updated by: Peter Saunderson <peteasa@gmail.com>
+
+diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+index b8576fd..2269dc0 100644
+--- a/drivers/dma/dmatest.c
++++ b/drivers/dma/dmatest.c
+@@ -502,6 +502,8 @@ static int dmatest_func(void *data)
+ 			break;
+ 		}
+ 
++		align = 3;
++
+ 		if (params->noverify)
+ 			len = params->buf_size;
+ 		else

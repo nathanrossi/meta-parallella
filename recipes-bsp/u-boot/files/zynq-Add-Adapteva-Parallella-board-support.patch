@@ -1,0 +1,208 @@
+From e7b7a7982d0f1d55b5ce74b728790f1ac637b903 Mon Sep 17 00:00:00 2001
+From: Nathan Rossi <nathan@nathanrossi.com>
+Date: Fri, 11 Mar 2016 20:52:05 +1000
+Subject: [PATCH] zynq: Add Adapteva Parallella board support
+
+The Parallella is a single board computer showcasing the Epiphany
+multi-core processor from Adapteva. The board uses a Zynq-7000 SoC which
+interconnects to the Epiphany. This patch adds support for booting on
+the Zynq system of the board.
+
+More information on this board is available at: https://parallella.org/
+
+Signed-off-by: Nathan Rossi <nathan@nathanrossi.com>
+Cc: Albert Aribaud <albert.u.boot@aribaud.net>
+Cc: Michal Simek <monstr@monstr.eu>
+Upstream-Status: Submitted
+---
+ arch/arm/dts/Makefile             |  1 +
+ arch/arm/dts/zynq-parallella.dts  | 96 +++++++++++++++++++++++++++++++++++++++
+ configs/zynq_parallella_defconfig | 36 +++++++++++++++
+ include/configs/zynq_parallella.h | 17 +++++++
+ 4 files changed, 150 insertions(+)
+ create mode 100644 arch/arm/dts/zynq-parallella.dts
+ create mode 100644 configs/zynq_parallella_defconfig
+ create mode 100644 include/configs/zynq_parallella.h
+
+diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
+index de75e24..70d3fec 100644
+--- a/arch/arm/dts/Makefile
++++ b/arch/arm/dts/Makefile
+@@ -82,6 +82,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += zynq-zc702.dtb \
+ 	zynq-zed.dtb \
+ 	zynq-zybo.dtb \
+ 	zynq-microzed.dtb \
++	zynq-parallella.dtb \
+ 	zynq-picozed.dtb \
+ 	zynq-zc770-xm010.dtb \
+ 	zynq-zc770-xm011.dtb \
+diff --git a/arch/arm/dts/zynq-parallella.dts b/arch/arm/dts/zynq-parallella.dts
+new file mode 100644
+index 0000000..2a8a805
+--- /dev/null
++++ b/arch/arm/dts/zynq-parallella.dts
+@@ -0,0 +1,96 @@
++/*
++ * Adapteva Parallella board DTS
++ *
++ *  Copyright (C) 2011 - 2013 Xilinx
++ *  Copyright (C) 2012 National Instruments Corp.
++ *  Copyright (C) 2014 SUSE LINUX Products GmbH
++ *  Copyright (C) 2016 Nathan Rossi
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++/dts-v1/;
++/include/ "zynq-7000.dtsi"
++
++/ {
++	model = "Adapteva Parallella Board";
++	compatible = "adapteva,parallella", "xlnx,zynq-7000";
++
++	aliases {
++		ethernet0 = &gem0;
++		serial0 = &uart1;
++		spi0 = &qspi;
++		mmc0 = &sdhci0;
++	};
++
++	memory {
++		device_type = "memory";
++		reg = <0x0 0x40000000>;
++	};
++
++	chosen {
++		bootargs = "earlyprintk";
++		stdout-path = "serial0:115200n8";
++	};
++};
++
++&clkc {
++	fclk-enable = <0xf>;
++	ps-clk-frequency = <33333333>;
++};
++
++&gem0 {
++	status = "okay";
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethernet_phy>;
++
++	ethernet_phy: ethernet-phy@0 {
++		/* Marvell 88E1318 */
++		compatible = "ethernet-phy-id0141.0e90",
++		             "ethernet-phy-ieee802.3-c22";
++		reg = <0>;
++		marvell,reg-init = <0x3 0x10 0xff00 0x1e>,
++		                   <0x3 0x11 0xfff0 0xa>;
++	};
++};
++
++&i2c0 {
++	status = "okay";
++
++	isl9305: isl9305@68 {
++		compatible = "isil,isl9305";
++		reg = <0x68>;
++
++		regulators {
++			dcd1 {
++				regulator-name = "VDD_DSP";
++				regulator-always-on;
++			};
++			dcd2 {
++				regulator-name = "1P35V";
++				regulator-always-on;
++			};
++			ldo1 {
++				regulator-name = "VDD_ADJ";
++			};
++			ldo2 {
++				regulator-name = "VDD_GPIO";
++				regulator-always-on;
++			};
++		};
++	};
++};
++
++&sdhci1 {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&uart1 {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
++
++&qspi {
++	u-boot,dm-pre-reloc;
++	status = "okay";
++};
+diff --git a/configs/zynq_parallella_defconfig b/configs/zynq_parallella_defconfig
+new file mode 100644
+index 0000000..fe05c82
+--- /dev/null
++++ b/configs/zynq_parallella_defconfig
+@@ -0,0 +1,36 @@
++CONFIG_ARM=y
++CONFIG_SYS_CONFIG_NAME="zynq_parallella"
++CONFIG_ARCH_ZYNQ=y
++CONFIG_DEFAULT_DEVICE_TREE="zynq-parallella"
++CONFIG_SPL=y
++CONFIG_FIT=y
++CONFIG_FIT_VERBOSE=y
++CONFIG_FIT_SIGNATURE=y
++CONFIG_HUSH_PARSER=y
++CONFIG_SYS_PROMPT="Parallella> "
++# CONFIG_CMD_IMLS is not set
++# CONFIG_CMD_FLASH is not set
++CONFIG_CMD_MMC=y
++CONFIG_CMD_SF=y
++CONFIG_CMD_GPIO=y
++# CONFIG_CMD_SETEXPR is not set
++CONFIG_CMD_TFTPPUT=y
++CONFIG_CMD_DHCP=y
++CONFIG_CMD_MII=y
++CONFIG_CMD_PING=y
++CONFIG_CMD_CACHE=y
++CONFIG_CMD_EXT2=y
++CONFIG_CMD_EXT4=y
++CONFIG_CMD_EXT4_WRITE=y
++CONFIG_CMD_FAT=y
++CONFIG_CMD_FS_GENERIC=y
++CONFIG_NET_RANDOM_ETHADDR=y
++CONFIG_SPL_DM_SEQ_ALIAS=y
++CONFIG_ZYNQ_SDHCI=y
++CONFIG_SPI_FLASH=y
++CONFIG_SPI_FLASH_BAR=y
++CONFIG_SPI_FLASH_SPANSION=y
++CONFIG_SPI_FLASH_STMICRO=y
++CONFIG_SPI_FLASH_WINBOND=y
++CONFIG_ZYNQ_GEM=y
++CONFIG_ZYNQ_QSPI=y
+diff --git a/include/configs/zynq_parallella.h b/include/configs/zynq_parallella.h
+new file mode 100644
+index 0000000..f7d17b8
+--- /dev/null
++++ b/include/configs/zynq_parallella.h
+@@ -0,0 +1,17 @@
++/*
++ * (C) Copyright 2016 Nathan Rossi
++ *
++ * Configuration for Adapteva Parallella Board
++ * See zynq-common.h for Zynq common configs
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
++ */
++
++#ifndef __CONFIG_ZYNQ_PARALLELLA_H
++#define __CONFIG_ZYNQ_PARALLELLA_H
++
++#define CONFIG_SYS_NO_FLASH
++
++#include <configs/zynq-common.h>
++
++#endif /* __CONFIG_ZYNQ_PARALLELLA_H */
+-- 
+2.8.1
+

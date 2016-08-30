@@ -6,6 +6,8 @@ SRCREV = "eb7c3a109b494e7f27387d119882b7a127759ada"
 
 include linux-parallella.inc
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/linux-parallella/4.4:"
+
 # add the drivers necessary with SRCREV eb7c3a1
 SRC_URI_append = " \
 	file://0001-dma-proof-concept-pl330.patch \

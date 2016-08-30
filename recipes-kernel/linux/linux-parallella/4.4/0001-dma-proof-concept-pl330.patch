@@ -1,0 +1,31 @@
+Patch for parallella-linux created by diff of
+  linux-analogdevicesinc branch 2016_R1 fe07ae73916d16457f02b572a3050544c26a5078
+and
+  parallella-linux branch parallella-linux-2016.3 eb7c3a109b494e7f27387d119882b7a127759ada
+
+Patch based on the following commit:
+commit 3f5fc4e20d39309f920a1356ecd67a09359504f8 Fri Jul 18 09:19:56 2014
+dmaengine: pl330: Embed pl330_req directly into dma_pl330_desc
+
+Created by: Peter Saunderson <peteasa@gmail.com>
+
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 17ee758..52bd7dd 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -1142,6 +1142,7 @@ static inline int _ldst_devtomem(unsigned dry_run, u8 buf[],
+ {
+ 	int off = 0;
+ 
++	off += _emit_FLUSHP(dry_run, &buf[off], pxs->desc->peri);
+ 	while (cyc--) {
+ 		off += _emit_WFP(dry_run, &buf[off], SINGLE, pxs->desc->peri);
+ 		off += _emit_LDP(dry_run, &buf[off], SINGLE, pxs->desc->peri);
+@@ -1157,6 +1158,7 @@ static inline int _ldst_memtodev(unsigned dry_run, u8 buf[],
+ {
+ 	int off = 0;
+ 
++	off += _emit_FLUSHP(dry_run, &buf[off], pxs->desc->peri);
+ 	while (cyc--) {
+ 		off += _emit_WFP(dry_run, &buf[off], SINGLE, pxs->desc->peri);
+ 		off += _emit_LD(dry_run, &buf[off], ALWAYS);

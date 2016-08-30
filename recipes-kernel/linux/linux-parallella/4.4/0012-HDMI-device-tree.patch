@@ -1,0 +1,107 @@
+diff --git a/arch/arm/boot/dts/zynq-parallella.dts b/arch/arm/boot/dts/zynq-parallella.dts
+index 620043f..abcd564 100644
+--- a/arch/arm/boot/dts/zynq-parallella.dts
++++ b/arch/arm/boot/dts/zynq-parallella.dts
+@@ -43,9 +43,11 @@
+ 		compatible = "xlnx,axi-vdma-1.00.a";
+ 		reg = <0x43000000 0x1000>;
+ 		#dma-cells = <1>;
+-		xlnx,num-fstores = <3>;
+-		xlnx,include-sg = <0>;
+-		xlnx,flush-fsync = <2>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		#dma-channels = <1>;
++		xlnx,num-fstores = <0x3>;
++		xlnx,flush-fsync = <0x1>;
+ 
+ 		dma-channel@43000000 {
+ 			compatible = "xlnx,axi-vdma-mm2s-channel";
+@@ -57,26 +59,49 @@
+ 		};
+ 	};
+ 
+-	axi_clkgen: axi-clkgen@66000000 {
+-		compatible = "adi,axi-clkgen-1.00.a";
++	hdmi_clock: axi-clkgen@66000000 {
++		compatible = "adi,axi-clkgen-2.00.a";
+ 		reg = <0x66000000 0x10000>;
+ 		#clock-cells = <0>;
+ 		clocks = <&clkc 17>;
+ 	};
+ 
++	axi_hdmi@6C000000 {
++		compatible = "adi,axi-hdmi-tx-1.00.a";
++		reg = <0x6c000000 0x10000>;
++		dmas = <&axi_vdma 0>;
++		dma-names = "video";
++		clocks = <&hdmi_clock>;
++		adi,is-rgb;
++
++		port {
++			axi_hdmi_out: endpoint {
++				remote-endpoint = <&adv7513_in>;
++			};
++		};
++	};
++
+ 	audio_clock: audio-clock {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+ 		clock-frequency = <12288000>;
+ 	};
+ 
+-	axi-spdif-tx@75c00000 {
++	axi_spdif_tx_0: axi-spdif-tx@75c00000 {
+ 		compatible = "adi,axi-spdif-tx-1.00.a";
+ 		reg = <0x75c00000 0x1000>;
+ 		clocks = <&clkc 15>, <&audio_clock>;
+ 		clock-names = "axi", "ref";
+ 		dmas = <&dmac_s 0>;
+ 		dma-names = "tx";
++
++		#sound-dai-cells = <0>;
++	};
++
++	adv7511_hdmi_snd: adv7511_hdmi_snd {
++		compatible = "adv7511-hdmi-snd";
++		audio-codec = <&adv7513>;
++		cpu-dai = <&axi_spdif_tx_0>;
+ 	};
+ };
+ 
+@@ -84,12 +109,19 @@
+ 	adv7513: hdmi@39 {
+ 		compatible = "adi,adv7513";
+ 		reg = <0x39>;
+-		adi,input-depth = <8>;
+-		adi,input-colorspace = "rgb";
+-		adi,input-clock = "1x";
+-		adi,input-style = <2>;
+-		adi,input-justification = "left";
+-		adi,clock-delay = <3>;
++		adi,input-color-depth = <0x0>;
++		adi,input-style = <0x2>;
++		adi,bit-justification = <0x0>;
++		adi,clock-delay = <0x3>;
++		adi,input-id = <0x1>;
++		adi,sync-pulse = <0x3>;
++		adi,up-conversion = <0x0>;
++		adi,timing-generation-sequence = <0x0>;
++		adi,vsync-polarity = <0x2>;
++		adi,hsync-polarity = <0x2>;
++		adi,tdms-clock-inversion;
++
++		#sound-dai-cells = <0>;
+ 
+ 		ports {
+ 			#address-cells = <1>;
+@@ -99,7 +131,7 @@
+ 				reg = <0>;
+ 
+ 				adv7513_in: endpoint {
+-					/*remote-endpoint = <&dpi_out>;*/
++					remote-endpoint = <&axi_hdmi_out>;
+ 				};
+ 			};
+ 

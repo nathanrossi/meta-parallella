@@ -1,0 +1,35 @@
+From 7e44b46b46121ab87f049caf4a71df8f410b68ed Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Wed, 15 Jun 2016 14:20:16 +0200
+Subject: ASoC: snd_soc_of_parse_daifmt(): Handle SND_SOC_DAIFMT_SPDIF
+
+Allow to specify that a link use SPDIF format by setting the format to
+"spdif" in the devicetree.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index cf3979e..fa702c5 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -47,7 +47,7 @@ Optional dai-link subnode properties:
+ 
+ - format				: CPU/CODEC common audio format.
+ 					  "i2s", "right_j", "left_j" , "dsp_a"
+-					  "dsp_b", "ac97", "pdm", "msb", "lsb"
++					  "dsp_b", "ac97", "pdm", "msb", "lsb", "spdif"
+ - frame-master				: Indicates dai-link frame master.
+ 					  phandle to a cpu or codec subnode.
+ - bitclock-master			: Indicates dai-link bit clock master.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a1305f8..e930dde 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3444,6 +3444,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 		{ "pdm",	SND_SOC_DAIFMT_PDM},
+ 		{ "msb",	SND_SOC_DAIFMT_MSB },
+ 		{ "lsb",	SND_SOC_DAIFMT_LSB },
++		{ "spdif",	SND_SOC_DAIFMT_SPDIF },
+ 	};
+ 
+ 	if (!prefix)

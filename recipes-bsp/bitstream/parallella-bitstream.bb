@@ -25,9 +25,9 @@ do_install() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR_IMAGE}/bitstreams
+	install -d ${DEPLOYDIR}/bitstreams
 	for i in $(ls ${S}/fpga_bitfiles/ | grep parallella_.*_headless.*\.bit\.bin); do
-		install ${S}/fpga_bitfiles/$i ${DEPLOY_DIR_IMAGE}/bitstreams
+		install ${S}/fpga_bitfiles/$i ${DEPLOYDIR}/bitstreams
 	done
 }
 addtask deploy before do_build after do_install

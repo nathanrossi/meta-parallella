@@ -1,0 +1,33 @@
+From e47c7ee84fe04287bd051c1c0e9982bee70336a8 Mon Sep 17 00:00:00 2001
+From: Oleg Kokorin <ole2mail@mail.com>
+Date: Sun, 20 Oct 2019 14:51:49 -0700
+Subject: [PATCH] fix: replace find.pl dependency with modern API call
+
+---
+ util/perlpath.pl | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/util/perlpath.pl b/util/perlpath.pl
+index a1f236b..953c96b 100755
+--- a/util/perlpath.pl
++++ b/util/perlpath.pl
+@@ -1,13 +1,13 @@
+-#!/usr/local/bin/perl
++#!/media/compilation/projects/parallella/parallella-yoctobuild/build_parallella/tmp/sysroots/x86_64-linux/usr/bin/perl
+ #
+ # modify the '#!/usr/local/bin/perl'
+ # line in all scripts that rely on perl.
+ #
+ 
+-require "find.pl";
++use File::Find;
+ 
+ $#ARGV == 0 || print STDERR "usage: perlpath newpath  (eg /usr/bin)\n";
+-&find(".");
++&find(\&wanted, ".");
+ 
+ sub wanted
+ 	{
+-- 
+2.17.1
+
